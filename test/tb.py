@@ -1,16 +1,27 @@
 import cocotb
-from cocotb.triggers import Timer
+from cocotb.triggers import RisingEdge
+from cocotb.clock import Clock
+
+
+async def reset_dut(clk, rstn):
+    rstn.value = 0
+    await RisingEdge(clk)
+
+    rstn.value = 1
+    await RisingEdge(clk)
 
 
 @cocotb.test()
 async def my_first_test(dut):
     """Try accessing the design."""
 
-    for _ in range(10):
-        dut.clk.value = 0
-        await Timer(1, unit="ns")
-        dut.clk.value = 1
-        await Timer(1, unit="ns")
+    input_clock = Clock(dut.clk_i, 10, unit="ps")
+    input_clock.start()
 
-    cocotb.log.info("my_signal_1 is %s", dut.my_signal_1.value)
-    assert dut.my_signal_2.value == 0
+    await reset_dut(dut.clk_i, dut.rstn_i)
+
+    dut.message_blk_vld_i.value = 1
+    await RisingEdge(dut.clk_i)
+    dut.message_blk_vld_i.value = 0
+
+    await RisingEdge(dut.hash_vld_o)
