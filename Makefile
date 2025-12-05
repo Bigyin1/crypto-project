@@ -6,7 +6,7 @@ TOPLEVEL_LANG ?= verilog
 
 EXTRA_ARGS += --trace --trace-structs
 
-VERILOG_SOURCES += src/sha256_pkg.sv src/sha256.sv 
+VERILOG_SOURCES += src/sha256.sv 
 # use VHDL_SOURCES for VHDL files
 
 # COCOTB_TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
